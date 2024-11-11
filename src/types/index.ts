@@ -77,3 +77,14 @@ export interface JoinMeetingResponse {
   message: string;
   data: null;
 }
+
+export interface PersonalEvent {
+  start_at: string;
+  end_at: string;
+  time_zone: string;
+  all_day: boolean;
+}
+
+export interface PersonalResponse {
+  meeting_personal_times: PersonalEvent[];
+}

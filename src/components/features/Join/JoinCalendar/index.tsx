@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useGetMyEvent } from '@/api/hooks/useGetMyEvents';
 import { useJoinFormContext } from '@/hooks/useJoinFormContext';
@@ -7,6 +7,7 @@ import { WeeklyCalendar } from '@/service/Calendar';
 import type { Event } from '@/service/Calendar/types';
 import { vars } from '@/styles';
 import type { SelectedTime } from '@/types';
+import { convertSelectedTimesToEvents } from '@/utils/calendar/convertSelectedTimesToEvents';
 import { isOverlapping } from '@/utils/calendar/isOverlapping';
 import { toggleSelectedEvent } from '@/utils/calendar/toggleSelectedEvent';
 
@@ -19,15 +20,21 @@ type JoinCalendarProps = {
 };
 
 export const JoinCalendar: React.FC<JoinCalendarProps> = ({
-  meetingId,
   startDate,
   endDate,
   startTime,
   endTime,
 }) => {
   const { data, status } = useGetMyEvent();
-  const { setTimes } = useJoinFormContext();
-  const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
+  const { setTimes, meetingData } = useJoinFormContext();
+
+  const [selectedEvents, setSelectedEvents] = useState<Event[]>(
+    convertSelectedTimesToEvents(meetingData.times),
+  );
+
+  useEffect(() => {
+    setSelectedEvents(convertSelectedTimesToEvents(meetingData.times));
+  }, [meetingData.times]);
 
   if (status === 'error') {
     return <div>Error</div>;
@@ -38,7 +45,7 @@ export const JoinCalendar: React.FC<JoinCalendarProps> = ({
   }
 
   const displayedEvents: Event[] = data.map(({ id, time: { start_at, end_at } }) => ({
-    id: id,
+    id,
     title: '',
     date: start_at,
     start: start_at,
@@ -48,20 +55,19 @@ export const JoinCalendar: React.FC<JoinCalendarProps> = ({
   }));
 
   const handleSelectTime = (start: string, end: string) => {
-    const [selectedStart, selectedEnd] = [new Date(start), new Date(end)].sort(
-      (a, b) => a.getTime() - b.getTime(),
-    );
+    const selectedStart = new Date(start);
+    const selectedEnd = new Date(end);
 
     if (isOverlapping(selectedStart, selectedEnd, displayedEvents)) {
       alert('공통 일정은 선택할 수 없습니다.');
       return;
     }
 
-    const updatedEvents = toggleSelectedEvent(
-      selectedStart.toISOString(),
-      selectedEnd.toISOString(),
-      selectedEvents,
-    );
+    const localStartTime = `${selectedStart.getFullYear()}-${String(selectedStart.getMonth() + 1).padStart(2, '0')}-${String(selectedStart.getDate()).padStart(2, '0')}T${String(selectedStart.getHours()).padStart(2, '0')}:${String(selectedStart.getMinutes()).padStart(2, '0')}:00`;
+    const localEndTime = `${selectedEnd.getFullYear()}-${String(selectedEnd.getMonth() + 1).padStart(2, '0')}-${String(selectedEnd.getDate()).padStart(2, '0')}T${String(selectedEnd.getHours()).padStart(2, '0')}:${String(selectedEnd.getMinutes()).padStart(2, '0')}:00`;
+
+    const updatedEvents = toggleSelectedEvent(localStartTime, localEndTime, selectedEvents);
+
     setSelectedEvents(updatedEvents);
 
     const newTimes: SelectedTime[] = updatedEvents.map((event) => ({
@@ -70,9 +76,8 @@ export const JoinCalendar: React.FC<JoinCalendarProps> = ({
       timeZone: 'Asia/Seoul',
       allDay: false,
     }));
-    if (meetingId) {
-      setTimes(meetingId, newTimes);
-    }
+
+    setTimes(newTimes);
   };
 
   return (
