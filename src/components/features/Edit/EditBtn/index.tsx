@@ -2,25 +2,28 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useJoinMeeting } from '@/api/hooks/useJoinMeeting';
+import { useUpdatePersonal } from '@/api/hooks/useUpdatePersonal';
 import { Button } from '@/components/common/Button';
 import { useJoinFormContext } from '@/hooks/useJoinFormContext';
 import { RouterPath } from '@/routes/path';
 import type { JoinMeetingRequest } from '@/types';
+import { mergeTimes } from '@/utils/calendar/mergeTimes';
 
-type JoinBtnProps = {
+type EditBtnProps = {
   meetingId: string;
 };
 
-export const JoinBtn: React.FC<JoinBtnProps> = ({ meetingId }) => {
+export const EditBtn: React.FC<EditBtnProps> = ({ meetingId }) => {
   const navigate = useNavigate();
-  const { mutate: join } = useJoinMeeting();
+  const { mutate: updatePersonal } = useUpdatePersonal(meetingId);
   const { meetingData } = useJoinFormContext();
 
   const handleFormSubmit = () => {
-    const { times, preferences, nonPreferences } = meetingData;
-    const joinData: JoinMeetingRequest = {
-      times,
+    const { preferences, nonPreferences } = meetingData;
+
+    const mergedTimes = mergeTimes(meetingData.times);
+    const personalData: JoinMeetingRequest = {
+      times: mergedTimes,
       preferences,
       nonPreferences,
     };
@@ -30,24 +33,21 @@ export const JoinBtn: React.FC<JoinBtnProps> = ({ meetingId }) => {
       return;
     }
 
-    join(
-      { meetingId, joinData },
-      {
-        onSuccess: () => {
-          alert('참여 정보가 성공적으로 전송되었습니다!');
-          navigate(`${RouterPath.group}/${meetingId}`);
-        },
-        onError: () => {
-          alert('참여 정보 전송에 실패했습니다.');
-        },
+    updatePersonal(personalData, {
+      onSuccess: () => {
+        alert('참여 정보가 성공적으로 전송되었습니다!');
+        navigate(`${RouterPath.group}/${meetingId}`);
       },
-    );
+      onError: () => {
+        alert('참여 정보 전송에 실패했습니다.');
+      },
+    });
   };
 
   return (
     <ButtonContainer>
       <Button theme="green" onClick={handleFormSubmit}>
-        참여하기
+        수정하기
       </Button>
       <Button theme="ivory" onClick={() => navigate(-1)}>
         취소
