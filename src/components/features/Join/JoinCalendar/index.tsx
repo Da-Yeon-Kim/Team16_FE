@@ -20,6 +20,7 @@ type JoinCalendarProps = {
 };
 
 export const JoinCalendar: React.FC<JoinCalendarProps> = ({
+  meetingId,
   startDate,
   endDate,
   startTime,
@@ -67,7 +68,6 @@ export const JoinCalendar: React.FC<JoinCalendarProps> = ({
     const localEndTime = `${selectedEnd.getFullYear()}-${String(selectedEnd.getMonth() + 1).padStart(2, '0')}-${String(selectedEnd.getDate()).padStart(2, '0')}T${String(selectedEnd.getHours()).padStart(2, '0')}:${String(selectedEnd.getMinutes()).padStart(2, '0')}:00`;
 
     const updatedEvents = toggleSelectedEvent(localStartTime, localEndTime, selectedEvents);
-
     setSelectedEvents(updatedEvents);
 
     const newTimes: SelectedTime[] = updatedEvents.map((event) => ({
