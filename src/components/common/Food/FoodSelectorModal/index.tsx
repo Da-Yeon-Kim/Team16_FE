@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { useGetCategory } from '@/api/hooks/useGetCategory';
 import { useGetFoodsByCategory } from '@/api/hooks/useGetFood';
@@ -26,7 +26,7 @@ export const FoodSelectorModal: React.FC<Props> = ({ selectedFoods, onFoodSelect
   };
 
   const filteredFoods = foodsByCategory?.filter((food) =>
-    food.name.toLowerCase().includes(searchTerm.toLowerCase())
+    food.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -82,7 +82,6 @@ export const FoodSelectorModal: React.FC<Props> = ({ selectedFoods, onFoodSelect
   );
 };
 
-// 스타일 컴포넌트 정의
 const ModalBackdrop = styled.div`
   position: fixed;
   top: 0;

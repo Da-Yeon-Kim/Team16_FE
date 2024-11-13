@@ -1,33 +1,29 @@
 import { useState } from 'react';
 
-import { useAddNonPreferenceFood } from '@/api/hooks/useAddNonPreferenceFood';
-import { useDeleteNonPreferenceFood } from '@/api/hooks/useDeleteNonPreference';
-import { useGetNonPreferenceFoods } from '@/api/hooks/useGetNonPreferenceFoods';
+import { useGetPreferenceFoods } from '@/api/hooks/useGetPreferenceFoods';
 import { FoodPreferenceSection } from '@/components/common/Food/FoodPreferenceSection';
 import { FoodSelectorModal } from '@/components/common/Food/FoodSelectorModal';
 import { useFoodPreferences } from '@/hooks/useFoodPreferences';
+import { useJoinFormContext } from '@/hooks/useJoinFormContext';
 
-export const NonPreferenceSection: React.FC = () => {
-  const { data, status } = useGetNonPreferenceFoods();
-  const addFoodNonPreference = useAddNonPreferenceFood();
-  const deleteFoodNonPreference = useDeleteNonPreferenceFood();
+export const JoinPreferences: React.FC = () => {
+  const { data, status } = useGetPreferenceFoods();
+  const { meetingData, setPreferences } = useJoinFormContext();
   const [showModal, setShowModal] = useState(false);
 
   const { selectedFoods, handleFoodSelect, handleFoodRemove } = useFoodPreferences({
     initialFoods: data,
-    preferences: [],
-    setPreferences: () => {},
-    onAddFood: (food) => addFoodNonPreference.mutate(food),
-    onRemoveFood: (foodId) => deleteFoodNonPreference.mutate(foodId),
+    preferences: meetingData.preferences,
+    setPreferences,
   });
 
   if (status === 'pending') return <p>Loading...</p>;
-  if (status === 'error') return <p>Error loading nonPreferences</p>;
+  if (status === 'error') return <p>Error loading preferences</p>;
 
   return (
     <>
       <FoodPreferenceSection
-        title="꺼려하는 음식"
+        title="선호하는 음식"
         foods={selectedFoods}
         onDeleteFood={handleFoodRemove}
         onOpenModal={() => setShowModal(true)}

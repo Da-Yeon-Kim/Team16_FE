@@ -1,24 +1,20 @@
 import { useState } from 'react';
 
-import { useAddNonPreferenceFood } from '@/api/hooks/useAddNonPreferenceFood';
-import { useDeleteNonPreferenceFood } from '@/api/hooks/useDeleteNonPreference';
 import { useGetNonPreferenceFoods } from '@/api/hooks/useGetNonPreferenceFoods';
 import { FoodPreferenceSection } from '@/components/common/Food/FoodPreferenceSection';
 import { FoodSelectorModal } from '@/components/common/Food/FoodSelectorModal';
 import { useFoodPreferences } from '@/hooks/useFoodPreferences';
+import { useJoinFormContext } from '@/hooks/useJoinFormContext';
 
-export const NonPreferenceSection: React.FC = () => {
+export const JoinNonPreferences: React.FC = () => {
   const { data, status } = useGetNonPreferenceFoods();
-  const addFoodNonPreference = useAddNonPreferenceFood();
-  const deleteFoodNonPreference = useDeleteNonPreferenceFood();
+  const { meetingData, setNonPreferences } = useJoinFormContext();
   const [showModal, setShowModal] = useState(false);
 
   const { selectedFoods, handleFoodSelect, handleFoodRemove } = useFoodPreferences({
     initialFoods: data,
-    preferences: [],
-    setPreferences: () => {},
-    onAddFood: (food) => addFoodNonPreference.mutate(food),
-    onRemoveFood: (foodId) => deleteFoodNonPreference.mutate(foodId),
+    preferences: meetingData.preferences,
+    setPreferences: setNonPreferences,
   });
 
   if (status === 'pending') return <p>Loading...</p>;
