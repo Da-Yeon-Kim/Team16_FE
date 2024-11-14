@@ -1,14 +1,15 @@
 import { useParams } from 'react-router-dom';
 
-import { useGetMeetingInfo } from '@/api/hooks/useGetMeetingInfo';
-import { useGetPersonalEvents } from '@/api/hooks/useGetPersonalEvents';
+import { useGetPersonalEvents } from '@/api/hooks/Calendar/useGetPersonalEvents';
+import { useGetMeetingInfo } from '@/api/hooks/Meeting/useGetMeetingInfo';
 import { Container } from '@/components/common/layouts/Container';
 import { EditBtn } from '@/components/features/Edit/EditBtn';
+import { EditNonPreferences } from '@/components/features/Edit/EditNonPreferences';
+import { EditPreferences } from '@/components/features/Edit/EditPreferences';
 import { JoinCalendar } from '@/components/features/Join/JoinCalendar';
-import { JoinFood } from '@/components/features/Join/JoinFood';
 import { JoinTitle } from '@/components/features/Join/JoinTitle';
 import { JoinFormProvider } from '@/hooks/useJoinFormContext';
-import { convertToInitialTimes } from '@/utils/calendar/convertToInitialTimes';
+import { convertToInitialTimes } from '@/utils/calendar/converter';
 
 export const EditPage: React.FC = () => {
   const { meetingId } = useParams<{ meetingId: string }>();
@@ -37,7 +38,8 @@ export const EditPage: React.FC = () => {
           startTime={startTime}
           endTime={endTime}
         />
-        <JoinFood />
+        <EditPreferences meetingId={meetingId} />
+        <EditNonPreferences meetingId={meetingId} />
         <EditBtn meetingId={meetingId} />
       </Container>
     </JoinFormProvider>

@@ -1,4 +1,8 @@
+import dayjs from 'dayjs';
+
 import type { CreateMeetingRequest } from '@/types';
+
+const INITIAL_DATE = '1970-01-01';
 
 export const validateCreateForm = (
   values: CreateMeetingRequest,
@@ -12,6 +16,13 @@ export const validateCreateForm = (
     };
   }
 
+  if (title.length > 20) {
+    return {
+      errorMessage: '모임 이름은 20자 이내로 작성해주세요.',
+      isValid: false,
+    };
+  }
+
   if (!startDate || !endDate) {
     return {
       errorMessage: '시작일과 종료일을 입력해주세요.',
@@ -19,7 +30,7 @@ export const validateCreateForm = (
     };
   }
 
-  if (startDate > endDate) {
+  if (dayjs(startDate).isAfter(dayjs(endDate))) {
     return {
       errorMessage: '종료일은 시작일보다 이후여야 합니다.',
       isValid: false,
@@ -40,9 +51,22 @@ export const validateCreateForm = (
     };
   }
 
-  if (startTime >= endTime) {
+  if (dayjs(`${INITIAL_DATE}T${startTime}`).isAfter(dayjs(`${INITIAL_DATE}T${endTime}`))) {
     return {
       errorMessage: '종료 시간은 시작 시간보다 이후여야 합니다.',
+      isValid: false,
+    };
+  }
+
+  const timeDifferenceInHours = dayjs(`${INITIAL_DATE}T${endTime}`).diff(
+    dayjs(`${INITIAL_DATE}T${startTime}`),
+    'hour',
+    true,
+  );
+
+  if (durationTime > timeDifferenceInHours) {
+    return {
+      errorMessage: '소요 시간은 시간 범위 내로 설정해주세요.',
       isValid: false,
     };
   }

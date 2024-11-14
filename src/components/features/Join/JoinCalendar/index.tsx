@@ -1,15 +1,17 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
-import { useGetMyEvent } from '@/api/hooks/useGetMyEvents';
+import { useGetMyEvent } from '@/api/hooks/Calendar/useGetMyEvents';
 import { useJoinFormContext } from '@/hooks/useJoinFormContext';
 import { WeeklyCalendar } from '@/service/Calendar';
 import type { Event } from '@/service/Calendar/types';
 import { vars } from '@/styles';
 import type { SelectedTime } from '@/types';
-import { convertSelectedTimesToEvents } from '@/utils/calendar/convertSelectedTimesToEvents';
-import { isOverlapping } from '@/utils/calendar/isOverlapping';
-import { toggleSelectedEvent } from '@/utils/calendar/toggleSelectedEvent';
+import {
+  checkIsOverlapping,
+  convertSelectedTimesToEvents,
+  toggleSelectedEvent,
+} from '@/utils/calendar';
 
 type JoinCalendarProps = {
   meetingId: string;
@@ -20,7 +22,6 @@ type JoinCalendarProps = {
 };
 
 export const JoinCalendar: React.FC<JoinCalendarProps> = ({
-  meetingId,
   startDate,
   endDate,
   startTime,
@@ -59,7 +60,7 @@ export const JoinCalendar: React.FC<JoinCalendarProps> = ({
     const selectedStart = new Date(start);
     const selectedEnd = new Date(end);
 
-    if (isOverlapping(selectedStart, selectedEnd, displayedEvents)) {
+    if (checkIsOverlapping(selectedStart, selectedEnd, displayedEvents)) {
       alert('공통 일정은 선택할 수 없습니다.');
       return;
     }
@@ -68,6 +69,7 @@ export const JoinCalendar: React.FC<JoinCalendarProps> = ({
     const localEndTime = `${selectedEnd.getFullYear()}-${String(selectedEnd.getMonth() + 1).padStart(2, '0')}-${String(selectedEnd.getDate()).padStart(2, '0')}T${String(selectedEnd.getHours()).padStart(2, '0')}:${String(selectedEnd.getMinutes()).padStart(2, '0')}:00`;
 
     const updatedEvents = toggleSelectedEvent(localStartTime, localEndTime, selectedEvents);
+
     setSelectedEvents(updatedEvents);
 
     const newTimes: SelectedTime[] = updatedEvents.map((event) => ({

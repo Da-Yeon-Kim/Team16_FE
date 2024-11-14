@@ -28,7 +28,6 @@ const FormGroup = styled.div`
 `;
 
 const FormLabel = styled.label`
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 1.25rem;
   display: block;
