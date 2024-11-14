@@ -1,7 +1,8 @@
 import 'react-datepicker/dist/react-datepicker.css';
-import './custom-datepicker.css';
+import '../custom-datepicker.css';
 
 import styled from '@emotion/styled';
+import dayjs from 'dayjs';
 import React from 'react';
 import DatePicker from 'react-datepicker';
 import { useFormContext } from 'react-hook-form';
@@ -10,12 +11,15 @@ import type { CreateMeetingRequest } from '@/types';
 
 export const DateRange: React.FC = () => {
   const { setValue, watch } = useFormContext<CreateMeetingRequest>();
+
   const startDate = watch('startDate');
   const endDate = watch('endDate');
 
-  const formatDate = (date: Date | null) => {
-    if (!date) return undefined;
-    return date.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
+  const handleDateChange = (date: Date | null, type: 'start' | 'end') => {
+    if (date) {
+      const formattedDate = dayjs(date).format('YYYY-MM-DD');
+      setValue(type === 'start' ? 'startDate' : 'endDate', formattedDate);
+    }
   };
 
   return (
@@ -23,22 +27,22 @@ export const DateRange: React.FC = () => {
       <FormLabel>날짜 범위</FormLabel>
       <DateRangeContainer>
         <DatePicker
-          selected={startDate ? new Date(startDate) : undefined}
-          onChange={(date: Date | null) => setValue('startDate', formatDate(date))}
+          selected={startDate ? dayjs(startDate).toDate() : undefined}
+          onChange={(date) => handleDateChange(date, 'start')}
           selectsStart
-          startDate={startDate ? new Date(startDate) : undefined}
-          endDate={endDate ? new Date(endDate) : undefined} // 수정: null 대신 undefined
+          startDate={startDate ? dayjs(startDate).toDate() : undefined}
+          endDate={endDate ? dayjs(endDate).toDate() : undefined}
           placeholderText="시작 날짜"
           dateFormat="yyyy.MM.dd"
           className="custom-datepicker"
         />
         <DateSeparator>~</DateSeparator>
         <DatePicker
-          selected={endDate ? new Date(endDate) : undefined} // DatePicker에서 사용할 수 있도록 변환
-          onChange={(date: Date | null) => setValue('endDate', formatDate(date))}
+          selected={endDate ? dayjs(endDate).toDate() : undefined}
+          onChange={(date) => handleDateChange(date, 'end')}
           selectsEnd
-          startDate={startDate ? new Date(startDate) : undefined} // 수정: null 대신 undefined
-          endDate={endDate ? new Date(endDate) : undefined} // 수정: null 대신 undefined
+          startDate={startDate ? dayjs(startDate).toDate() : undefined}
+          endDate={endDate ? dayjs(endDate).toDate() : undefined}
           placeholderText="종료 날짜"
           dateFormat="yyyy.MM.dd"
           className="custom-datepicker"
@@ -55,7 +59,6 @@ const FormGroup = styled.div`
 `;
 
 const FormLabel = styled.label`
-  font-family: 'Pretendard', sans-serif;
   font-weight: 600;
   font-size: 1.25rem;
   display: block;

@@ -1,17 +1,18 @@
 import { rest } from 'msw';
 
-import { getConfirmPath } from '../hooks/useConfirm';
-import { createMeetingPath } from '../hooks/useCreateMeeting';
-import { getCategoryPath } from '../hooks/useGetCategory';
-import { getConfirmInfoPath } from '../hooks/useGetConfirmInfo';
-import { getMeetingInfoPath } from '../hooks/useGetMeetingInfo';
-import { getMyMeetingsPath } from '../hooks/useGetMyMeetings';
-import { getparticipantPath } from '../hooks/useGetParticipant';
-import { getPermissionPath } from '../hooks/useGetPermission';
-import { getRecommendMenuPath } from '../hooks/useGetRecommandMenu';
-import { joinMeetingPath } from '../hooks/useJoinMeeting';
-import { getLeaveGroupPath } from '../hooks/useLeaveGroup';
-import { getUpdatePersonalPath } from '../hooks/useUpdatePersonal';
+import { getConfirmPath } from '@/api/hooks/Meeting/useConfirm';
+import { createMeetingPath } from '@/api/hooks/Meeting/useCreateMeeting';
+import { getConfirmInfoPath } from '@/api/hooks/Meeting/useGetConfirmInfo';
+import { getMeetingInfoPath } from '@/api/hooks/Meeting/useGetMeetingInfo';
+import { getMeetingNonPreferencesPath } from '@/api/hooks/Meeting/useGetMeetingNonPreferences';
+import { getMeetingPreferencesPath } from '@/api/hooks/Meeting/useGetMeetingPreferences';
+import { getMyMeetingsPath } from '@/api/hooks/Meeting/useGetMyMeetings';
+import { getparticipantPath } from '@/api/hooks/Meeting/useGetParticipant';
+import { getPermissionPath } from '@/api/hooks/Meeting/useGetPermission';
+import { getRecommendMenuPath } from '@/api/hooks/Meeting/useGetRecommandMenu';
+import { joinMeetingPath } from '@/api/hooks/Meeting/useJoinMeeting';
+import { getLeaveGroupPath } from '@/api/hooks/Meeting/useLeaveGroup';
+import { getUpdatePersonalPath } from '@/api/hooks/Meeting/useUpdatePersonal';
 
 export const meetingMockHandler = [
   rest.get(getMyMeetingsPath(), (_, res, ctx) => {
@@ -36,9 +37,6 @@ export const meetingMockHandler = [
       return res(ctx.json(RECOMMEND_MENU_MOCK));
     },
   ),
-  rest.get(getCategoryPath(), (_, res, ctx) => {
-    return res(ctx.json(MENU_CATEGORY_MOCK));
-  }),
   rest.delete(getLeaveGroupPath({ meetingId: '1' }), (_, res, ctx) => {
     return res(ctx.json({ message: '성공' }));
   }),
@@ -60,9 +58,13 @@ export const meetingMockHandler = [
   rest.put(getUpdatePersonalPath('1'), (_, res, ctx) => {
     return res(ctx.json(PERSONAL_MEETING_MOCK));
   }),
+  rest.get(getMeetingPreferencesPath({ meetingId: '1' }), (_, res, ctx) => {
+    return res(ctx.json(MEETING_PREFERENCES_MOCK));
+  }),
+  rest.get(getMeetingNonPreferencesPath({ meetingId: '1' }), (_, res, ctx) => {
+    return res(ctx.json(MEETING_NONPREFERENCES_MOCK));
+  }),
 ];
-
-// mocks
 
 const CREATE_MEETING_MOCK = {
   status: 200,
@@ -289,12 +291,6 @@ const RECOMMEND_MENU_MOCK = {
   ],
 };
 
-const MENU_CATEGORY_MOCK = {
-  status: 200,
-  message: '카테고리 조회 성공',
-  data: ['한식', '중식', '일식', '양식', '카페,디저트', '술집', '기타'],
-};
-
 const MEETING_INFO_MOCK = {
   status: 200,
   message: '모임 정보 조회 성공',
@@ -344,4 +340,38 @@ const PERSONAL_MEETING_MOCK = {
   status: 200,
   message: '모임별 개인 정보 수정 성공',
   data: null,
+};
+
+const MEETING_PREFERENCES_MOCK = {
+  status: 200,
+  message: '모임별 개인 선호 음식 조회 성공',
+  data: [
+    {
+      food_id: 1001,
+      category: '한식',
+      name: '불고기',
+    },
+    {
+      food_id: 5001,
+      category: '카페,디저트',
+      name: '커피',
+    },
+  ],
+};
+
+const MEETING_NONPREFERENCES_MOCK = {
+  status: 200,
+  message: '모임별 개인 비선호 음식 조회 성공',
+  data: [
+    {
+      food_id: 1003,
+      category: '한식',
+      name: '김치찌개',
+    },
+    {
+      food_id: 2007,
+      category: '양식',
+      name: '리조또',
+    },
+  ],
 };

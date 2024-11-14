@@ -2,11 +2,12 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useJoinMeeting } from '@/api/hooks/useJoinMeeting';
+import { useJoinMeeting } from '@/api/hooks/Meeting/useJoinMeeting';
 import { Button } from '@/components/common/Button';
 import { useJoinFormContext } from '@/hooks/useJoinFormContext';
 import { RouterPath } from '@/routes/path';
 import type { JoinMeetingRequest } from '@/types';
+import { mergeTimes } from '@/utils/calendar';
 
 type JoinBtnProps = {
   meetingId: string;
@@ -19,8 +20,10 @@ export const JoinBtn: React.FC<JoinBtnProps> = ({ meetingId }) => {
 
   const handleFormSubmit = () => {
     const { times, preferences, nonPreferences } = meetingData;
+
+    const mergedTimes = mergeTimes(times);
     const joinData: JoinMeetingRequest = {
-      times,
+      times: mergedTimes,
       preferences,
       nonPreferences,
     };

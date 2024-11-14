@@ -88,3 +88,9 @@ export interface PersonalEvent {
 export interface PersonalResponse {
   meeting_personal_times: PersonalEvent[];
 }
+
+export interface Food {
+  food_id: number;
+  category: string;
+  name: string;
+}
