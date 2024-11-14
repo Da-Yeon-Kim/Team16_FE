@@ -39,7 +39,11 @@ const reissueAccessToken = async () => {
     if (response.status === 200) {
       const newAccessToken = response.headers.Authorization?.replace('Bearer ', '');
       if (newAccessToken) {
-        authLocalStorage.set(newAccessToken); 
+        authLocalStorage.set(newAccessToken);
+        // TODO: Remove console.log
+        console.log('axios에서 저장할 newAccessToken:', newAccessToken);
+        // TODO: Remove console.log
+        console.log('axios에서 저장된 newAccessToken값 확인 :', authLocalStorage.get());
         return newAccessToken;
       }
     }
@@ -65,7 +69,7 @@ fetchWithToken.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response && error.response.status === 401) {
-      console.warn("401 Unauthorized: Access token expired or invalid");
+      console.warn('401 Unauthorized: Access token expired or invalid');
 
       try {
         const newAccessToken = await reissueAccessToken();
@@ -79,5 +83,5 @@ fetchWithToken.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
