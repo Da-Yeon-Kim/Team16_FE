@@ -1,6 +1,7 @@
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 
+import { RouterPath } from '@/routes/path';
 import { authLocalStorage } from '@/utils/storage';
 
 export const baseURL = process.env.REACT_APP_BASE_URL;
@@ -21,6 +22,14 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
 
 export const fetchInstance = initInstance({
   baseURL,
+  withCredentials: true,
+});
+
+fetchInstance.interceptors.response.use((config) => {
+  const newToken = config.headers.authorization?.replace('Bearer ', '');
+
+  if (newToken) authLocalStorage.set(newToken);
+  return config;
 });
 
 const getAccessToken = () => authLocalStorage.get();
@@ -73,7 +82,7 @@ fetchWithToken.interceptors.response.use(
         return await fetchWithToken(originalRequest);
       } catch (refreshError) {
         console.error('토큰 재발급 실패:', refreshError);
-        window.location.href = `${baseURL}/login`;
+        window.location.href = `${RouterPath.login}`;
         return Promise.reject(refreshError);
       }
     }
