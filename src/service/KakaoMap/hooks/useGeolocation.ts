@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import type { Coordinates } from '@/types';
+import type { Coordinates } from '../types';
 
-export const useGeolocation = (): Coordinates | null => {
+export const useGeolocation = () => {
   const [location, setLocation] = useState<Coordinates | null>(null);
 
   useEffect(() => {
