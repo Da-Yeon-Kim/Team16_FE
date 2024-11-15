@@ -6,7 +6,8 @@ import { useJoinFormContext } from '@/hooks/useJoinFormContext';
 import { WeeklyCalendar } from '@/service/Calendar';
 import type { Event } from '@/service/Calendar/types';
 import { vars } from '@/styles';
-import type { SelectedTime } from '@/types';
+import type { PersonalEvent } from '@/types';
+import { getCurrentDateStrings } from '@/utils/calculator';
 import {
   checkIsOverlapping,
   convertSelectedTimesToEvents,
@@ -27,7 +28,8 @@ export const JoinCalendar: React.FC<JoinCalendarProps> = ({
   startTime,
   endTime,
 }) => {
-  const { data, status } = useGetMyEvent();
+  const duration = getCurrentDateStrings(new Date().toISOString());
+  const { data, status } = useGetMyEvent(duration);
   const { setTimes, meetingData } = useJoinFormContext();
 
   const [selectedEvents, setSelectedEvents] = useState<Event[]>(
@@ -72,11 +74,11 @@ export const JoinCalendar: React.FC<JoinCalendarProps> = ({
 
     setSelectedEvents(updatedEvents);
 
-    const newTimes: SelectedTime[] = updatedEvents.map((event) => ({
-      startAt: event.start,
-      endAt: event.end,
-      timeZone: 'Asia/Seoul',
-      allDay: false,
+    const newTimes: PersonalEvent[] = updatedEvents.map((event) => ({
+      start_at: event.start,
+      end_at: event.end,
+      time_zone: 'Asia/Seoul',
+      all_day: false,
     }));
 
     setTimes(newTimes);

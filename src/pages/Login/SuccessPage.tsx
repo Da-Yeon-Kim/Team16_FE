@@ -15,8 +15,7 @@ export const SuccessPage = () => {
   }, [refetch]);
 
   if (status === 'pending') {
-    console.log('success페이지에서 토큰을 가져오는 중...');
-    return <div>토큰을 가져오는 중...</div>;
+    return null;
   }
 
   if (status === 'success') navigate(RouterPath.home);

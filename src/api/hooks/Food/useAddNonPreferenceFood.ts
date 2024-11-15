@@ -7,7 +7,7 @@ export const getAddNonPreferenceFoodPath = () => `${baseURL}/non-preferences`;
 
 const addNonPreferenceFood = async (food: Food) => {
   const response = await fetchWithToken.post(getAddNonPreferenceFoodPath(), {
-    foodId: food.food_id,
+    foodId: food.foodId,
   });
   return response.data;
 };

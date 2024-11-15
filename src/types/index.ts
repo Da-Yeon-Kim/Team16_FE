@@ -1,29 +1,7 @@
-export interface Coordinates {
-  lat: number;
-  lng: number;
-}
-
-export interface AddressInfo {
-  address: string;
-  roadAddress: string | null;
-}
-
-export interface PlaceInfo {
-  location_id: string;
-  name: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-}
+import type { PlaceInfo } from '@/service/KakaoMap/types';
 
 export interface CreateMeetingRequest {
-  baseLocation: {
-    location_id: number;
-    name: string;
-    address: string;
-    latitude: number;
-    longitude: number;
-  };
+  baseLocation: PlaceInfo;
   title: string;
   startDate: string | undefined;
   endDate: string | undefined;
@@ -35,7 +13,7 @@ export interface CreateMeetingRequest {
 export interface CreateMeetingResponse {
   status: number;
   message: string;
-  data: null;
+  data: number;
 }
 
 export interface MeetingInfo {
@@ -59,17 +37,10 @@ export interface GroupEvent {
   display: string;
 }
 
-export interface SelectedTime {
-  startAt: string;
-  endAt: string;
-  timeZone: string;
-  allDay: boolean;
-}
-
 export interface JoinMeetingRequest {
   preferences: number[];
   nonPreferences: number[];
-  times: SelectedTime[];
+  times: PersonalEvent[];
 }
 
 export interface JoinMeetingResponse {
@@ -86,11 +57,11 @@ export interface PersonalEvent {
 }
 
 export interface PersonalResponse {
-  meeting_personal_times: PersonalEvent[];
+  meetingPersonalTimes: PersonalEvent[];
 }
 
 export interface Food {
-  food_id: number;
+  foodId: number;
   category: string;
   name: string;
 }

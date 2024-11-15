@@ -22,7 +22,7 @@ export const GroupHostCollectionMenuSection: React.FC = () => {
 
   useEffect(() => {
     if (selectedMenuName) {
-      const selectedMenuId = foods?.find((food) => food.name === selectedMenuName)?.food_id;
+      const selectedMenuId = foods?.find((food) => food.name === selectedMenuName)?.foodId;
       if (selectedMenuId) setValue('confirmFoodId', selectedMenuId);
     }
   }, [selectedMenuName, foods, setValue]);
@@ -31,7 +31,7 @@ export const GroupHostCollectionMenuSection: React.FC = () => {
     return <div>Loading...</div>;
   if (confirmStatus === 'error' || recommendMenuStatus === 'error') return <div>Error</div>;
 
-  const displayMenuName = confirmedInfo?.confirmedFood.name || selectedMenuName;
+  const displayMenuName = confirmedInfo?.confirmedFood?.name || selectedMenuName;
 
   return (
     <section>

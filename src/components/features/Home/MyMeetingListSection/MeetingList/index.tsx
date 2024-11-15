@@ -2,39 +2,43 @@ import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
 import type { Meeting } from '@/api/hooks/Meeting/useGetMyMeetings';
+import { Spacing } from '@/components/common/layouts/Spacing';
 import { RouterPath } from '@/routes/path';
 
 type Props = {
   meetings: Meeting[];
-  title: string;
   showFoodName?: boolean;
 };
 
-export const MeetingList: React.FC<Props> = ({ meetings, title, showFoodName = false }) => {
+export const MeetingList: React.FC<Props> = ({ meetings, showFoodName = false }) => {
   return (
     <>
-      <MeetingsTitle>{title}</MeetingsTitle>
-      <hr />
       {meetings.map(({ confirmedDateTime, confirmedFood, meetingId, title: meetingTitle }) => (
-        <Link to={`${RouterPath.group}/${meetingId}`} key={meetingId}>
-          <MeetingItem>
-            <MeetingTitle>{meetingTitle}</MeetingTitle>
-            {showFoodName && confirmedFood && (
-              <MeetingConfirmFood>{confirmedFood.name}</MeetingConfirmFood>
-            )}
-            <MeetingConfirmDateTime>{confirmedDateTime}</MeetingConfirmDateTime>
-          </MeetingItem>
-        </Link>
+        <>
+          <Link to={`${RouterPath.group}/${meetingId}`} key={meetingId}>
+            <MeetingItem>
+              <MeetingTitle>{meetingTitle}</MeetingTitle>
+              {showFoodName && confirmedFood && (
+                <MeetingConfirmFood>{confirmedFood.name}</MeetingConfirmFood>
+              )}
+              <MeetingConfirmDateTime>
+                {confirmedDateTime &&
+                  new Date(confirmedDateTime).toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+              </MeetingConfirmDateTime>
+            </MeetingItem>
+          </Link>
+          <Spacing height={10} />
+        </>
       ))}
     </>
   );
 };
-
-const MeetingsTitle = styled.h3`
-  font-size: 1.3rem;
-  font-weight: 500;
-  user-select: none;
-`;
 
 const MeetingItem = styled.li`
   display: grid;
