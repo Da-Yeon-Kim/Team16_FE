@@ -51,7 +51,7 @@ export const useFoodPreferences = ({
   };
 
   return {
-    selectedFoods: initialFoods || selectedFoods,
+    selectedFoods,
     handleFoodSelect,
     handleFoodRemove,
   };
