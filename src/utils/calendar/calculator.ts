@@ -1,5 +1,5 @@
 import type { Event } from '@/service/Calendar/types';
-import type { SelectedTime } from '@/types';
+import type { PersonalEvent } from '@/types';
 
 import { formatToLocalTime } from './formatter';
 
@@ -40,8 +40,8 @@ export const toggleSelectedEvent = (
   return updatedEvents;
 };
 
-export const sortTimes = (times: SelectedTime[]) =>
-  [...times].sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime());
+export const sortTimes = (times: PersonalEvent[]) =>
+  [...times].sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime());
 
 export const mergeEndTimes = (currentEnd: number, nextEndAt: string): string => {
   return new Date(Math.max(currentEnd, new Date(nextEndAt).getTime()))
@@ -49,19 +49,20 @@ export const mergeEndTimes = (currentEnd: number, nextEndAt: string): string => 
     .replace(' ', 'T');
 };
 
-export const mergeTimes = (times: SelectedTime[]): SelectedTime[] => {
+export const mergeTimes = (times: PersonalEvent[]): PersonalEvent[] => {
   if (times.length === 0) return [];
+
   const sortedTimes = sortTimes(times);
-  const mergedTimes: SelectedTime[] = [];
+  const mergedTimes: PersonalEvent[] = [];
   let current = sortedTimes[0];
 
   for (let i = 1; i < sortedTimes.length; i++) {
     const next = sortedTimes[i];
-    const currentEnd = new Date(current.endAt).getTime();
-    const nextStart = new Date(next.startAt).getTime();
+    const currentEnd = new Date(current.end_at).getTime();
+    const nextStart = new Date(next.start_at).getTime();
 
     if (nextStart <= currentEnd) {
-      current.endAt = mergeEndTimes(currentEnd, next.endAt);
+      current.end_at = mergeEndTimes(currentEnd, next.end_at);
     } else {
       mergedTimes.push(current);
       current = next;
@@ -70,5 +71,9 @@ export const mergeTimes = (times: SelectedTime[]): SelectedTime[] => {
 
   mergedTimes.push(current);
 
-  return mergedTimes;
+  return mergedTimes.map((event) => ({
+    ...event,
+    start_at: event.start_at.endsWith('Z') ? event.start_at : `${event.start_at}Z`,
+    end_at: event.end_at.endsWith('Z') ? event.end_at : `${event.end_at}Z`,
+  }));
 };

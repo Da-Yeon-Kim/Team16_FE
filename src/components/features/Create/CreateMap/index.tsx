@@ -1,35 +1,48 @@
 import styled from '@emotion/styled';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { usePlaceSearch } from '@/api/hooks/usePlaceSearch';
-import { useGeocoder } from '@/hooks/useGeocoder';
-import { useGeolocation } from '@/hooks/useGeolocation';
-import { useKakaoMap } from '@/hooks/useKakaoMap';
+import { CircleMap } from '@/service/KakaoMap/components/CircleMap';
+import { useGeolocation } from '@/service/KakaoMap/hooks/useGeolocation';
+import type { Coordinates } from '@/service/KakaoMap/types';
 import { breakpoints } from '@/styles/variants';
 import type { CreateMeetingRequest } from '@/types';
-import type { Coordinates } from '@/types';
 
 export const CreateMap: React.FC = () => {
   const { setValue } = useFormContext<CreateMeetingRequest>();
-  const userLocation: Coordinates | null = useGeolocation();
-  const coordinates: Coordinates | null = useKakaoMap('map', userLocation);
-  const addressInfo = useGeocoder(coordinates);
-  const placeInfo = usePlaceSearch(addressInfo?.address || null);
+
+  const userLocation = useGeolocation();
+  const [selectedCoordinates, setSelectedCoordinates] = useState<Coordinates | null>(userLocation);
 
   useEffect(() => {
-    if (placeInfo) {
+    if (userLocation) {
+      setSelectedCoordinates(userLocation);
       setValue('baseLocation', {
-        location_id: +placeInfo.location_id,
-        name: placeInfo.name,
-        address: placeInfo.address,
-        latitude: coordinates?.lat || 0,
-        longitude: coordinates?.lng || 0,
+        name: '이름',
+        address: '주소',
+        latitude: userLocation.lat,
+        longitude: userLocation.lng,
       });
     }
-  }, [placeInfo, setValue, coordinates?.lat, coordinates?.lng]);
+  }, [userLocation, setValue]);
 
-  return <MapContainer id="map" />;
+  const handleMapClick = (coordinates: Coordinates) => {
+    setSelectedCoordinates(coordinates);
+  };
+
+  if (!userLocation) return <MapContainer>Loading...</MapContainer>;
+
+  return (
+    <>
+      {selectedCoordinates && (
+        <CircleMap
+          containerId="map"
+          defaultPosition={selectedCoordinates}
+          onClick={handleMapClick}
+        />
+      )}
+    </>
+  );
 };
 
 const MapContainer = styled.div`

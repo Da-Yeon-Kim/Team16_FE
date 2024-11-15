@@ -29,14 +29,26 @@ interface Event {
   memo: string; // 일정 메모
 }
 
-export const getMyEvent = async () => {
-  const response = await fetchWithToken<Event[]>(getMyEventPath());
+interface GetMyEventsResponse {
+  events: Event[];
+}
+
+type Duration = {
+  from: string;
+  to: string;
+};
+
+export const getMyEvent = async ({ from, to }: Duration) => {
+  const response = await fetchWithToken<GetMyEventsResponse>(
+    `${getMyEventPath()}?from=${from}&to=${to}`,
+  );
   return response.data;
 };
 
-export const useGetMyEvent = () => {
+export const useGetMyEvent = (duration: Duration) => {
   return useQuery({
     queryKey: [getMyEventPath()],
-    queryFn: getMyEvent,
+    queryFn: () => getMyEvent(duration),
+    select: (data) => data.events,
   });
 };

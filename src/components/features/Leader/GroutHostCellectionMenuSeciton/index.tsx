@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import type { ConfirmMeetingRequest } from '@/api/hooks/Meeting/useConfirm';
+import { useGetConfirmInfo } from '@/api/hooks/Meeting/useGetConfirmInfo';
 import { useGetRecommendMenu } from '@/api/hooks/Meeting/useGetRecommandMenu';
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { DefaultMenu } from '@/components/common/Menu/DefaultMenu';
@@ -16,17 +17,21 @@ export const GroupHostCollectionMenuSection: React.FC = () => {
   const [selectedMenuName, setSelectedMenuName] = useState('');
   const { setValue } = useFormContext<ConfirmMeetingRequest>();
 
-  const { data: foods, status } = useGetRecommendMenu(meetingId);
+  const { data: confirmedInfo, status: confirmStatus } = useGetConfirmInfo({ meetingId });
+  const { data: foods, status: recommendMenuStatus } = useGetRecommendMenu(meetingId);
 
   useEffect(() => {
     if (selectedMenuName) {
-      const selectedMenuId = foods?.find((food) => food.name === selectedMenuName)?.food_id;
+      const selectedMenuId = foods?.find((food) => food.name === selectedMenuName)?.foodId;
       if (selectedMenuId) setValue('confirmFoodId', selectedMenuId);
     }
   }, [selectedMenuName, foods, setValue]);
 
-  if (status === 'pending') return <div>Loading...</div>;
-  if (status === 'error') return <div>Error</div>;
+  if (confirmStatus === 'pending' || recommendMenuStatus === 'pending')
+    return <div>Loading...</div>;
+  if (confirmStatus === 'error' || recommendMenuStatus === 'error') return <div>Error</div>;
+
+  const displayMenuName = confirmedInfo?.confirmedFood?.name || selectedMenuName;
 
   return (
     <section>
@@ -35,7 +40,7 @@ export const GroupHostCollectionMenuSection: React.FC = () => {
       <MenuCategory foods={foods}>
         {({ name }) => (
           <>
-            {selectedMenuName === name ? (
+            {displayMenuName === name ? (
               <SelectedMenu menuName={name} />
             ) : (
               <div

@@ -22,7 +22,7 @@ export const useFoodPreferences = ({
 
   useEffect(() => {
     if (initialFoods && preferences.length === 0 && !isInitialized) {
-      const foodIds = initialFoods.map((food) => food.food_id);
+      const foodIds = initialFoods.map((food) => food.foodId);
       setSelectedFoods(initialFoods);
       setPreferences(foodIds);
       setIsInitialized(true);
@@ -30,21 +30,22 @@ export const useFoodPreferences = ({
   }, [initialFoods, preferences.length, isInitialized, setPreferences]);
 
   const handleFoodSelect = (food: Food) => {
-    const isAlreadySelected = selectedFoods.some((selected) => selected.food_id === food.food_id);
+    const isAlreadySelected = selectedFoods.some((selected) => selected.foodId === food.foodId);
 
     if (isAlreadySelected) {
-      setSelectedFoods((prevFoods) => prevFoods.filter((f) => f.food_id !== food.food_id));
-      setPreferences(preferences.filter((id) => id !== food.food_id));
-      if (onRemoveFood) onRemoveFood(food.food_id);
+      // 이미 선택 되어있다면
+      setSelectedFoods((prevFoods) => prevFoods.filter((f) => f.foodId !== food.foodId)); //제거
+      setPreferences(preferences.filter((id) => id !== food.foodId));
+      if (onRemoveFood) onRemoveFood(food.foodId);
     } else {
       setSelectedFoods((prevFoods) => [...prevFoods, food]);
-      setPreferences([...preferences, food.food_id]);
+      setPreferences([...preferences, food.foodId]);
       if (onAddFood) onAddFood(food);
     }
   };
 
   const handleFoodRemove = (foodId: number) => {
-    setSelectedFoods((prevFoods) => prevFoods.filter((food) => food.food_id !== foodId));
+    setSelectedFoods((prevFoods) => prevFoods.filter((food) => food.foodId !== foodId));
     setPreferences(preferences.filter((id) => id !== foodId));
     if (onRemoveFood) onRemoveFood(foodId);
   };

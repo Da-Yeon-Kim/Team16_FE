@@ -1,10 +1,10 @@
 import { useGetConfirmInfo } from '@/api/hooks/Meeting/useGetConfirmInfo';
+import { Spacing } from '@/components/common/layouts/Spacing';
 import { useGetMeetingId } from '@/hooks/useGetMeetingId';
-import { KakaoMapSearch } from '@/service/KakaoMap';
+import { SearchMap } from '@/service/KakaoMap/components/SearchMap';
 
 export const GroupConfirmedMap: React.FC = () => {
   const meetingId = useGetMeetingId();
-
   const { data, status } = useGetConfirmInfo({ meetingId });
 
   if (status === 'pending') {
@@ -15,7 +15,7 @@ export const GroupConfirmedMap: React.FC = () => {
     return <div>error</div>;
   }
 
-  if (!data) return null;
+  if (!data.baseLocation || !data.confirmedFood) return null;
 
   const {
     baseLocation: { latitude, longitude },
@@ -24,13 +24,14 @@ export const GroupConfirmedMap: React.FC = () => {
 
   return (
     <section>
-      <KakaoMapSearch
+      <SearchMap
         keyword={name}
         baseLocation={{
           lat: latitude,
           lng: longitude,
         }}
       />
+      <Spacing height={80} />
     </section>
   );
 };

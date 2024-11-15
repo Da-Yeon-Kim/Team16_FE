@@ -69,7 +69,7 @@ export const meetingMockHandler = [
 const CREATE_MEETING_MOCK = {
   status: 200,
   message: '모임 생성 성공',
-  data: null,
+  data: 1,
 };
 
 const MY_MEETING_MOCK = {
@@ -87,7 +87,23 @@ const MY_MEETING_MOCK = {
       title: '밥먹자',
       confirmedDateTime: '2022-10-28T03:00:00Z',
       confirmedFood: {
-        food_id: 1001,
+        foodId: 1001,
+        category: '한식',
+        name: '불고기',
+      },
+    },
+    {
+      meetingId: 2,
+      baseLocation: {
+        locationId: 18577297,
+        address: '경기 성남시 분당구 판교역로 166',
+        latitude: 37.39570088983171,
+        longitude: 127.1104335101161,
+      },
+      title: '밥먹자',
+      confirmedDateTime: '2022-10-28T03:00:00Z',
+      confirmedFood: {
+        foodId: 1001,
         category: '한식',
         name: '불고기',
       },
@@ -179,112 +195,112 @@ const RECOMMEND_MENU_MOCK = {
   message: '모임 추천 음식 조회 성공',
   data: [
     {
-      food_id: 1,
+      foodId: 1,
       category: '한식',
       name: '삼겹살',
     },
     {
-      food_id: 123,
+      foodId: 123,
       category: '한식',
       name: '제육볶음',
     },
     {
-      food_id: 2,
+      foodId: 2,
       category: '한식',
       name: '김치찌개',
     },
     {
-      food_id: 3,
+      foodId: 3,
       category: '한식',
       name: '된장찌개',
     },
     {
-      food_id: 4,
+      foodId: 4,
       category: '중식',
       name: '짜장면',
     },
     {
-      food_id: 5,
+      foodId: 5,
       category: '중식',
       name: '마라탕',
     },
     {
-      food_id: 6,
+      foodId: 6,
       category: '중식',
       name: '양꼬치',
     },
     {
-      food_id: 7,
+      foodId: 7,
       category: '일식',
       name: '라멘',
     },
     {
-      food_id: 8,
+      foodId: 8,
       category: '일식',
       name: '우동',
     },
     {
-      food_id: 9,
+      foodId: 9,
       category: '일식',
       name: '돈카츠',
     },
     {
-      food_id: 10,
+      foodId: 10,
       category: '양식',
       name: '피자',
     },
     {
-      food_id: 11,
+      foodId: 11,
       category: '양식',
       name: '함박스테이크',
     },
     {
-      food_id: 12,
+      foodId: 12,
       category: '카페,디저트',
       name: '티라미수',
     },
     {
-      food_id: 13,
+      foodId: 13,
       category: '카페,디저트',
       name: '마카롱',
     },
     {
-      food_id: 14,
+      foodId: 14,
       category: '술집',
       name: '치킨',
     },
     {
-      food_id: 15,
+      foodId: 15,
       category: '술집',
       name: '닭발',
     },
     {
-      food_id: 10,
+      foodId: 10,
       category: '양식',
       name: '피자',
     },
     {
-      food_id: 11,
+      foodId: 11,
       category: '양식',
       name: '함박스테이크',
     },
     {
-      food_id: 12,
+      foodId: 12,
       category: '카페,디저트',
       name: '티라미수',
     },
     {
-      food_id: 13,
+      foodId: 13,
       category: '카페,디저트',
       name: '마카롱',
     },
     {
-      food_id: 14,
+      foodId: 14,
       category: '술집',
       name: '치킨',
     },
     {
-      food_id: 15,
+      foodId: 15,
       category: '기타',
       name: '닭발',
     },
@@ -308,6 +324,7 @@ const PERMISSION_MOCK = {
   message: '권한 조회 성공',
   data: {
     isHost: true,
+    // isHost: false,
   },
 };
 
@@ -321,12 +338,14 @@ const CONFIRMED_INFO_MOCK = {
   status: 200,
   message: '모임 확정 날짜, 확정 음식 조회 성공',
   data: {
-    confirmedDateTime: '2022-10-28T03:00:00Z',
-    confirmedFood: {
-      foodId: 1001,
-      category: '한식',
-      name: '고기',
-    },
+    // confirmedDateTime: '2024-10-31T03:00:00Z',
+    confirmedDateTime: null,
+    // confirmedFood: {
+    //   foodId: 1001,
+    //   category: '한식',
+    //   name: '삼겹살',
+    // },
+    confirmedFood: null,
     baseLocation: {
       locationId: 18577297,
       address: '전남대학교',
@@ -347,12 +366,12 @@ const MEETING_PREFERENCES_MOCK = {
   message: '모임별 개인 선호 음식 조회 성공',
   data: [
     {
-      food_id: 1001,
+      foodId: 1001,
       category: '한식',
       name: '불고기',
     },
     {
-      food_id: 5001,
+      foodId: 5001,
       category: '카페,디저트',
       name: '커피',
     },
@@ -364,12 +383,12 @@ const MEETING_NONPREFERENCES_MOCK = {
   message: '모임별 개인 비선호 음식 조회 성공',
   data: [
     {
-      food_id: 1003,
+      foodId: 1003,
       category: '한식',
       name: '김치찌개',
     },
     {
-      food_id: 2007,
+      foodId: 2007,
       category: '양식',
       name: '리조또',
     },

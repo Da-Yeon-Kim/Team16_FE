@@ -11,6 +11,12 @@ export const useCreateFormContext = (): UseFormReturn<CreateMeetingRequest> => {
       durationTime: 1,
       startTime: '',
       endTime: '',
+      baseLocation: {
+        name: '',
+        address: '',
+        latitude: 0,
+        longitude: 0,
+      },
     },
   });
 };

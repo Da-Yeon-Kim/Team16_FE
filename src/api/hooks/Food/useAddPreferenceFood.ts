@@ -7,7 +7,7 @@ export const getAddPreferenceFoodPath = () => `${baseURL}/preferences`;
 
 const addPreferenceFood = async (food: Food) => {
   const response = await fetchWithToken.post(getAddPreferenceFoodPath(), {
-    foodId: food.food_id,
+    foodId: food.foodId,
   });
   return response.data;
 };
